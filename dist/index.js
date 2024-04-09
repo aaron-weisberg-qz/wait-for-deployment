@@ -8,6 +8,8 @@ require('./sourcemap-register.js');module.exports =
 const core = __webpack_require__(186);
 const github = __webpack_require__(438);
 
+core.debug = console.log;
+
 const sleep = (seconds) =>
   new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 

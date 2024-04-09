@@ -40,13 +40,18 @@ async function waitForDeployment() {
   while (new Date().getTime() < endTime) {
     try {
       const { data: deployments } = await octokit.repos.listDeployments(params);
+      core.debug(`Found ${deployments.length} deployments`);
 
       // Filter deployments by app name if specified
       const relevantDeployments = appName
         ? deployments.filter((deployment) => {
             try {
+              core.debug(`Parsing payload for deployment ${deployment}`);
               return JSON.parse(deployment.payload).app === appName;
             } catch (e) {
+              core.debug(
+                `Error parsing payload for deployment ${deployment.id}: ${e}`,
+              );
               return false; // Ignore deployments with invalid or missing app payload
             }
           })

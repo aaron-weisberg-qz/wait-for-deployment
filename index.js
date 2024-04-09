@@ -7,14 +7,14 @@ const sleep = (seconds) =>
 async function waitForDeployment() {
   const { eventName, payload, repo } = github.context;
   const token = core.getInput('token');
-  const environment = core.getInput('environment')
+  const environment = core.getInput('environment');
   const timeout = parseInt(core.getInput('timeout'), 10) * 1000;
   const endTime = new Date().getTime() + timeout;
   const appName = core.getInput('app');
 
   let params = {
-    environment: environment,
     ...repo,
+    environment,
   };
 
   core.debug(`eventName? ${eventName}`);
@@ -44,12 +44,12 @@ async function waitForDeployment() {
       // Filter deployments by app name if specified
       const relevantDeployments = appName
         ? deployments.filter((deployment) => {
-          try {
-            return JSON.parse(deployment.payload).app === appName;
-          } catch (e) {
-            return false; // Ignore deployments with invalid or missing app payload
-          }
-        })
+            try {
+              return JSON.parse(deployment.payload).app === appName;
+            } catch (e) {
+              return false; // Ignore deployments with invalid or missing app payload
+            }
+          })
         : deployments;
 
       if (relevantDeployments.length > 1) {
@@ -79,7 +79,6 @@ async function waitForDeployment() {
             `Deployment failed for ${params.sha}. ${failure.target_url}`,
           );
         }
-
       }
     } catch (error) {
       throw error;
